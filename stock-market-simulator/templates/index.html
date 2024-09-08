@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Market Simulator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Stock Market Simulator</h1>
+    <form id="search-form" action="/search" method="post">
+        <input type="text" id="search" name="stock" placeholder="Search for stocks">
+        <ul id="suggestions" style="border: 1px solid #ddd; position: absolute; max-height: 200px; overflow-y: auto; list-style-type: none; padding: 0; margin: 0;"></ul>
+        <button type="submit">Search</button>
+    </form>
+
+    <!-- Add JavaScript code to handle autocomplete and selection -->
+    <script>
+        $(document).ready(function() {
+            $('#search').keyup(function() {
+                var query = $(this).val().trim();  // Trim whitespace from input
+                if (query.length > 0) {
+                    $.ajax({
+                        url: "/autocomplete",
+                        type: "GET",
+                        data: {'q': query},  // Pass the query as a GET parameter
+                        success: function(data) {
+                            let suggestionList = $('#suggestions');
+                            suggestionList.empty();  // Clear existing suggestions
+
+                            // Populate the suggestion list with new data
+                            if (data.length > 0) {
+                                data.forEach(function(stock) {
+                                    suggestionList.append('<li>' + stock.symbol + ' - ' + stock.name + '</li>');
+                                });
+                            } else {
+                                suggestionList.append('<li>No results found</li>');
+                            }
+                        },
+                        error: function() {
+                            $('#suggestions').empty();
+                            $('#suggestions').append('<li>Error fetching suggestions</li>');
+                        }
+                    });
+                } else {
+                    $('#suggestions').empty();  // Clear suggestions if input is empty
+                }
+            });
+
+            // Handle clicking on a suggestion
+            $(document).on('click', '#suggestions li', function() {
+                var selectedText = $(this).text();
+                var symbol = selectedText.split(' - ')[0];  // Extract symbol from selected text
+                $('#search').val(symbol);  // Set the symbol in the input
+                $('#suggestions').empty();  // Clear the suggestion list
+                $('#search-form').submit();  // Optionally, automatically submit the form
+            });
+
+            // Optional: Hide suggestions when clicking outside
+            $(document).click(function(event) {
+                if (!$(event.target).closest('#search, #suggestions').length) {
+                    $('#suggestions').empty();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+

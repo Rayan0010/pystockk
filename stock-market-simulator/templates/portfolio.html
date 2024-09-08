@@ -1,0 +1,26 @@
+<!-- templates/portfolio.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Portfolio</title>
+</head>
+<body>
+    <h1>Your Portfolio</h1>
+    <table border="1">
+        <tr>
+            <th>Stock</th>
+            <th>Price</th>
+            <th>Quantity</th>
+        </tr>
+        {% for trade in portfolio %}
+        <tr>
+            <td>{{ trade.stock }}</td>
+            <td>{{ trade.price }}</td>
+            <td>{{ trade.quantity }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

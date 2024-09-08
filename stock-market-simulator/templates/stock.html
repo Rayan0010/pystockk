@@ -1,0 +1,38 @@
+<!-- templates/stock.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ stock_name }} Data</title>
+</head>
+<body>
+    <h1>Stock Data for {{ stock_name }}</h1>
+    <img src="/{{ chart_path }}" alt="{{ stock_name }} Stock Chart" />
+    <table border="1">
+        <tr>
+            <th>Date</th>
+            <th>Price</th>
+            <th>Volume</th>
+        </tr>
+        {% for row in stock_data %}
+        <tr>
+            <td>{{ row.Date }}</td>
+            <td>{{ row.Price }}</td>
+            <td>{{ row.Volume }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <!-- Add form for buying stock -->
+    <h2>Buy Stock</h2>
+    <form method="POST" action="/buy">
+        <input type="hidden" name="stock" value="{{ stock_name }}">
+        <label for="price">Price: </label>
+        <input type="text" name="price" required>
+        <label for="quantity">Quantity: </label>
+        <input type="text" name="quantity" required>
+        <button type="submit">Buy</button>
+    </form>
+</body>
+</html>
